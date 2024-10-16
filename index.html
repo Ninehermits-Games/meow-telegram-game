@@ -1,103 +1,232 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Meow</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <link rel="manifest" href="manifest.webmanifest">
-  </head>
-  <body>
-    <div id="unity-container">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+  <meta http-equiv="Content-Encoding" content="gzip" />
+  <meta http-equiv="Expires" content="0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+
+  <title>Meow</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <!--<script src="https://www.unpkg.com/web-animations-js@latest/web-animations.min.js"></script>-->
+  <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  <div id="unity-container">
+    <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+        <div id="unity-progress-bar-value">0%</div>
       </div>
-      <div id="unity-warning"> </div>
     </div>
-    <script>
-      window.addEventListener("load", function () {
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("ServiceWorker.js");
-        }
-      });
-
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var warningBanner = document.querySelector("#unity-warning");
-
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+    <div id="unity-warning"> </div>
+  </div>
+  <script>
+    window.addEventListener("load", function () {
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("ServiceWorker.js");
       }
+    });
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/310f3d2c7f71ba2a7aa065a6a7b5d692.data",
-        frameworkUrl: buildUrl + "/de8ebb8f3f41880070709c5d85ba6966.framework.js",
-        codeUrl: buildUrl + "/01264d6b55eda71be447db9779649994.wasm",
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarValue = document.querySelector("#unity-progress-bar-value");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var warningBanner = document.querySelector("#unity-warning");
+
+    // Shows a temporary message banner/ribbon for a few seconds, or
+    // a permanent error message on top of the canvas if type=='error'.
+    // If type=='warning', a yellow highlight color is used.
+    // Modify or remove this function to customize the visually presented
+    // way that non-critical warnings and error messages are presented to the
+    // user.
+    function unityShowBanner(msg, type) {
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      }
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function () {
+          warningBanner.removeChild(div);
+          updateBannerVisibility();
+        }, 5000);
+      }
+      updateBannerVisibility();
+    }
+
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js";
+    var config = {
+      dataUrl: buildUrl + "/b1cd9c823ab721e1c6420c31b6b93dce.data",
+      frameworkUrl: buildUrl + "/8be330df7c4dd5bb3187e8dbfa5bef60.framework.js",
+		cacheControl: function (url) {
+			if (url.match(/\.data/) || url.match(/\.bundle/)) {
+			  return "must-revalidate";
+			}
+			// Disable explicit caching for all other files.
+			// Note: the default browser cache may cache them anyway.
+			return "no-store";
+      },
+        codeUrl: buildUrl + "/6a37e5922015d66f8779669ce494d659.wasm",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "Meow",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
+		companyName: "BoomerBrainLabs",
+		productName: "Meow",
+		productVersion: "0.0.1",
+		showBanner: unityShowBanner,
       };
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
+    // By default Unity keeps WebGL canvas render target size matched with
+    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+    // Set this to false if you want to decouple this synchronization from
+    // happening inside the engine, and you would instead like to size up
+    // the canvas DOM size and WebGL render target sizes yourself.
+    // config.matchWebGLToCanvasSize = false;
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      // Mobile device style: fill the whole browser client area with the game canvas:
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+    }
+
+    const fitScreen = function () {
+      const body = document.body;
+      const docElement = document.documentElement;
+      if (body.dataset.scaled) {
+        window.scrollTo(0, +body.dataset.scaled);
+        delete body.dataset.scaled;
+        body.style.transform = "none";
+        return false;
+      } else {
+        const maxHeight = Math.max(body.scrollHeight, body.offsetHeight, docElement.clientHeight, docElement.scrollHeight, docElement.offsetHeight);
+        const viewportHeight = Math.max(docElement.clientHeight, window.innerHeight || 0);
+        const scaleFactor = viewportHeight / maxHeight;
+        if (scaleFactor < 1) {
+          body.style.transform = "scale(" + scaleFactor + ")";
+          body.dataset.scaled = window.scrollY;
+          window.scrollTo(0, maxHeight / 2 - viewportHeight / 2);
+          return true;
+        } else {
+          return false;
+        }
       }
+    };
+    window.fitScreen = fitScreen;
 
-      loadingBar.style.display = "block";
+    loadingBar.style.display = "block";
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-        }).catch((message) => {
-          alert(message);
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+        progressBarValue.innerHTML = Math.round(100 * progress) + "%";
+      }).then((unityInstance) => {
+        loadingBar.style.display = "none";
+        window.unityInstance = unityInstance;
+        window.fitScreen();
+
+        if (window.unityInstance) {
+          window.addEventListener('focus', function () {
+           
+			window.fitScreen();
+          });
+
+          window.addEventListener('blur', function () {
+           
+          });
+
+        }
+		
+
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+  <script>
+    if (window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+	  //window.Telegram.WebApp.setHeaderColor("#354C8A");
+      //window.Telegram.WebApp.setBackgroundColor("#354C8A");
+      //window.Telegram.WebApp.setBottomBarColor("#354C8A");
+      window.Telegram.WebApp.onEvent('invoiceClosed', async (object) => {
+        console.log('#invoiceClosed', object);
+        if (window.unityInstance) {
+			if(object.status === "paid"){ // stars
+				// disable button
+				
+			  } else {
+				// enable button
+				console.log("stars closed");
+				
+			  }
+			}
+      });
+      //window.scrollTo(0, 100);
+      window.Telegram.WebApp.enableClosingConfirmation(true);
+      if (window.Telegram.WebApp.isVersionAtLeast("7.7")) {
+        window.Telegram.WebApp.disableVerticalSwipes();
+      } else {
+        window.addEventListener("touchmove", (e) => e.preventDefault(), {
+          passive: false,
         });
-      };
-      document.body.appendChild(script);
-    </script>
-  </body>
+      }
+	  if(window.tonConnectUI){
+			const unsubscribeModal = window.tonConnectUI.onModalStateChange(
+				(state) => {
+					console.log({state});
+					if(state.state === "closed"){ // TON
+						// wallet closed
+						console.log("ton closed");
+						window.fitScreen();
+						
+					}
+				}
+			);
+			unsubscribeModal();
+		}
+		// Keys
+		 window.Telegram.WebApp.CloudStorage.getKeys(function (err, keys) {
+          if (err) {
+            console.log({ err });
+          } else {
+            console.log({ keys });
+           window.Telegram.WebApp.CloudStorage.getItems(
+              keys,
+              function (err, values) {
+                if (err) {
+                  console.log({ err });
+                } else {
+                  console.log({ values });
+                }
+              }
+            );
+          }
+        //});
+    }
+</script>
+<script>eruda.init();</script>
+ <!-- <div id="ton-connect"></div> -->
+</body>
+
 </html>
