@@ -71,19 +71,11 @@
     }
 
     var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js";
+    var loaderUrl = buildUrl + "/65f99af8b5caab27fb1088a8e2a52af3.loader.js";
     var config = {
-      dataUrl: buildUrl + "/130f6bd63aae5871a37468444bc618e6.data",
-      frameworkUrl: buildUrl + "/1dcc333896c6d7d3ca1495e101486d34.framework.js",
-		cacheControl: function (url) {
-			if (url.match(/\.data/) || url.match(/\.bundle/)) {
-			  return "must-revalidate";
-			}
-			// Disable explicit caching for all other files.
-			// Note: the default browser cache may cache them anyway.
-			return "no-store";
-      },
-        codeUrl: buildUrl + "/4adaa0ad920184497cd5fd08810bc5de.wasm",
+      dataUrl: buildUrl + "/e07bfc50afeced322426631eb349069d.data",
+      frameworkUrl: buildUrl + "/fc14c828ec72721dbd32b308a5a12384.framework.js",
+        codeUrl: buildUrl + "/06b9cb8c6950dc9d370ae408dad8f14f.wasm",
         streamingAssetsUrl: "StreamingAssets",
 		companyName: "BoomerBrainLabs",
 		productName: "Meow",
