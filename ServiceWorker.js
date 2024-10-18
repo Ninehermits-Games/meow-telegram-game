@@ -1,9 +1,9 @@
 const cacheName = "BoomerBrainLabs-Meow-0.0.1";
 const contentToCache = [
     "Build/bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js",
-    "Build/8be330df7c4dd5bb3187e8dbfa5bef60.framework.js",
-    "Build/b1cd9c823ab721e1c6420c31b6b93dce.data",
-    "Build/6a37e5922015d66f8779669ce494d659.wasm",
+    "Build/1dcc333896c6d7d3ca1495e101486d34.framework.js",
+    "Build/26ff87b7eaf76fc40c3498afd59bb48e.data",
+    "Build/4adaa0ad920184497cd5fd08810bc5de.wasm",
     "TemplateData/style.css"
 
 ];
